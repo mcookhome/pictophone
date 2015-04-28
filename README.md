@@ -6,12 +6,12 @@ PICTOPHONE
 
 ### Checkpoints
 * Matt- database (SQL)
-**
+ * 
 * Hubert
-**
+ * 
 * Andrew
-**
+ * 
 * Victor
-**
+ * 
 * Dionis
-**
+ * 
