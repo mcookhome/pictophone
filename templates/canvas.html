@@ -1,17 +1,46 @@
+<!DOCTYPE html> 
 <html>
-  <head>
-    <style>
-      .bordered {
-      border-style:solid;
-      border-width:1px;
-      }
-    </style>
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  </head>
-  <body>
-    <div id="content">
-      </div>
-    <script src="canvasd3.js">
-      </script>
-    </body>
-  </html>
+<head>
+  <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css"> 
+  <link rel="stylesheet" href="/static/board.css">
+  <link rel="stylesheet" href='spectrum.css' />
+</head>
+<body>
+  <hr>
+  <table border="1" padding="0">
+    <tr>
+      <td>
+	<canvas id="draw" width="640" height="480"></canvas>
+      </td>
+      <td>
+	<div id="chatcontainer">
+	  <div id="chatmain">
+	  </div>
+	  <div id="chatinput">
+            <button id="chatsendbutton">Send</button>
+            <span id="chatinputspan">
+              <input id="chattext" type="text"></input>
+            </span>
+	  </div>
+	</div>
+      </td>
+    </tr>
+    <tr>
+      Pen Size: <input type="range" id="sizeslider" value="10">
+      <span id="sizedisplay"></span>
+      <br>
+      Black <input id="blackradio" type="radio" name="color" value="#000000">
+      <br>
+      White <input id="whiteradio" type="radio" name="color" value="#FFFFFF">
+    </tr>
+  </table>
+  DEBUGOUT: <span id="debug"></span>
+  <hr>
+  <a href = "/boards">Return to board list</a>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="{{
+							url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+    <script src="/static/whiteboard.js"></script>
+    <script src="spectrum.js"></script>
+</body> 
+</html>
