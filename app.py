@@ -3,10 +3,24 @@ from utils import manager
 
 app=Flask(__name__)
 
-@app.route("/")
+@app.route("/",methods=['GET','POST'])
 def index():
-    print manager.getIDs()
-    return render_template("index.html")
+    ids= manager.getIDs()
+    if 'username' in session:
+        loggedin=True
+        username=session['username']
+        #myGames=manager.getUserGroups(username)
+        if request.method=='POST':
+            if request.form["submit"] == "Go":
+                if manager.getProfilePath() != "profile/":
+                    return redirect(manager.getProfilePath())
+
+        print ids
+        return render_template("base.html", loggedin=loggedin, username=username,ids=ids)
+    else:
+        loggedin=False
+        username = '-'
+        return render_template("base.html", loggedin=loggedin, username=username,ids=ids)
 
 @app.route("/base")
 def base():
@@ -74,6 +88,17 @@ def register():
     else:
         return render_template("register.html", page=3, loggedin=loggedin, username=username, ids=ids) 
 
+@app.route("/canvas")
+def canvas():
+    ids=manager.getIDs();
+    if 'username' in session:
+        username=session['username']
+        loggedin=True
+    else:
+        loggedin=False
+        username=""
+    return render_template("canvas.html",ids=ids,loggedin=loggedin)
+
 @app.route("/logout",methods=['GET','POST'])
 def logout():
    ids=manager.getIDs()
@@ -84,10 +109,7 @@ def logout():
    else:
       print "login status: not logged in"
       return render_template("logout.html",loggedin=False, previous=False, ids=ids)
-    
-@app.route("/canvas")
-def canvas():
-    return render_template("canvas.html")
+   #logout
 
 if __name__=="__main__":
     app.debug=True
