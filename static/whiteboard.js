@@ -18,7 +18,25 @@ var whiteradio = document.getElementById("whiteradio");
 
 var canvasupdaterate = 1;
 var chatupdaterate = 1;
+var dataUrl = "";
+var areusure;
+//
 
+
+var submission=document.getElementById("check");
+var node=document.getElementById("write");
+
+submission.onclick=function(){
+    console.log(node.innerHTML);
+    dataUrl = canvas.toDataURL();
+    areusure=canvas.toDataURL("image/png");
+    node.innerHTML='<img src="'+areusure+'"/>';
+    node.innerHTML+='<form method="post"><input type="hidden" name="dataurl" value="'+dataUrl+'"> <button class="sbutton button-xlarge pure-button" name="submit" type="submit" value="publish">Yes!!</button> </form>';
+    console.log(node.innerHTML);
+}
+
+
+//
 var mdown = false;
 var mlastpos;
 var mlastdown = false;

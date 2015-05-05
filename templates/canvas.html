@@ -1,6 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+
+{% if loggedin == False %}
+	<center>
+	<font size=5 face="License Plate">You are not logged in.<br>
+	You will be automatically redirected to the login page in 3 seconds.</font>
+	</center>
+	<meta http-equiv="refresh" content="3;url=/login" />
+	<br><br>
+
+	{% endif %}'
+{% if loggedin == True %}
+DEBUGOUT: <span id="debug"></span>
 <center>
   <table border="1" padding="0" bgcolor="white">
     <tr>
@@ -15,7 +28,9 @@
             <button id="chatsendbutton">Send</button>
             <span id="chatinputspan">
               <input id="chattext" type="text"></input>
-            </span>
+	    </span><br><center>
+	    <button class="pure-button" id="check">I'm done drawing!</button>
+	    <center>
 	  </div>
 	</div>
       </td>
@@ -29,10 +44,14 @@
       White <input id="whiteradio" type="radio" name="color" value="#FFFFFF">
     </tr>
   </table>
-DEBUGOUT: <span id="debug"></span>
+
+<div id="write"></div>
+
+
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="{{
 							url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
     <script src="/static/whiteboard.js"></script>
     <script src="spectrum.js"></script>
+{% endif %}
 {% endblock %}

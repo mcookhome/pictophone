@@ -22,6 +22,51 @@ def index():
         username = '-'
         return render_template("base.html", loggedin=loggedin, username=username,ids=ids)
 
+@app.route("/joingame",methods=['GET','POST'])
+def joingame():
+    ids= manager.getIDs()
+    if 'username' in session:
+        loggedin=True
+        username=session['username']
+        #myGames=manager.getUserGroups(username)
+        if request.method=='POST':
+            if request.form["submit"] == "Go":
+                if manager.getProfilePath() != "profile/":
+                    return redirect(manager.getProfilePath())
+
+        print ids
+        return render_template("jumpin.html", loggedin=loggedin, username=username,ids=ids)
+    else:
+        loggedin=False
+        username = '-'
+        return render_template("jumpin.html", loggedin=loggedin, username=username,ids=ids)
+
+@app.route("/picture",methods=['GET','POST'])
+@app.route("/picture/<num>",methods=['GET','POST'])
+def picture(num=-1):
+    num=int(num)
+    ids= manager.getIDs()
+    if 'username' in session:
+        loggedin=True
+        username=session['username']
+        #myGames=manager.getUserGroups(username)
+        if request.method=='POST':
+            if request.form["submit"] == "Go":
+                if manager.getProfilePath() != "profile/":
+                    return redirect(manager.getProfilePath())
+        
+        print ids
+        print num
+        dataUrl=manager.getPicture(num)
+        if dataUrl == -1:
+            return render_template("picture.html",loggedin=loggedin,username=username,ids=ids,reason="There is no picture with that ID!")
+        else:
+            return render_template("picture.html", loggedin=loggedin, username=username,ids=ids,dataUrl=dataUrl)
+    else:
+        loggedin=False
+        username = '-'
+        return render_template("picture.html", loggedin=loggedin, username=username,ids=ids)
+
 @app.route("/base")
 def base():
     return render_template("base.html")
@@ -88,12 +133,17 @@ def register():
     else:
         return render_template("register.html", page=3, loggedin=loggedin, username=username, ids=ids) 
 
-@app.route("/canvas")
+@app.route("/canvas", methods=['GET','POST'])
 def canvas():
     ids=manager.getIDs();
     if 'username' in session:
         username=session['username']
         loggedin=True
+        if request.method=='POST':
+            print request.data + "hello"
+            if request.form["submit"] == "publish":
+                dataUrl= request.form["dataurl"]
+                manager.storePicture(username,dataUrl)
     else:
         loggedin=False
         username=""
