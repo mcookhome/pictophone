@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, session,redirect,url_for
 import csv, unicodedata, requests, sqlite3
 
-def retTrue():
-    return True
 
 def getIDs():
     ids=[]
@@ -16,6 +14,20 @@ def getIDs():
         conn.close()
     ids[:]=[unicodedata.normalize('NFKD',o).encode('ascii','ignore') for o in ids]
     return ids
+
+def finishLogin(username):
+      
+    conn = sqlite3.connect("databases/users.db")
+    c = conn.cursor()
+    c.execute("select * from uinfo")
+    tabledata = c.fetchall()
+    conn.close()
+    for d in tabledata:
+        if username == d[0]:
+            return d[1]
+    return ""
+
+     
 
 def finishRegistration(username,password,registered):
     conn = sqlite3.connect("databases/users.db")
