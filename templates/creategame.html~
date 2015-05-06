@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+<center><h2 class="secondary">Welcome to Pictophone!!!!</h2>
+
+{% endblock %}
