@@ -3,25 +3,27 @@
 {% block content %}
 
 
-{% if loggedin == False %}
-	<center>
-	<font size=5 face="License Plate">You are not logged in.<br>
-	You will be automatically redirected to the login page in 3 seconds.</font>
-	</center>
-	<meta http-equiv="refresh" content="3;url=/login" />
-	<br><br>
-
-	{% endif %}'
 {% if loggedin == True %}
-DEBUGOUT: <span id="debug"></span>
-<center>
+	{% if sentence %}
+	<div style="font-size:2%;">DEBUGOUT: <span id="debug"></span></div>
+	<center>
+	  <div style="width:900px;">
+	    <h3> Instructions</h3>
+Draw your interpretation of this sentence to the best of your ability:<br>
+	    <h2 class="secondary"> {{sentence}} </h2>
+</div><br>
   <table border="1" padding="0" bgcolor="white">
+    <tr>
+      <td><center>
+	Draw here!
+	</center>
+      </td>
+
     <tr>
       <td>
 	<canvas id="draw" width="640" height="480"></canvas>
       </td>
-      <td>
-	<div id="chatcontainer">
+	<!--<div id="chatcontainer">
 	  <div id="chatmain">
 	  </div>
 	  <div id="chatinput">
@@ -29,23 +31,28 @@ DEBUGOUT: <span id="debug"></span>
             <span id="chatinputspan">
               <input id="chattext" type="text"></input>
 	    </span><br><center>
-	    <button class="pure-button" id="check">I'm done drawing!</button>
+	    
 	    <center>
 	  </div>
-	</div>
-      </td>
+	</div>-->
+
     </tr>
     <tr>
       Pen Size: <input type="range" id="sizeslider" value="10">
       <span id="sizedisplay"></span>
-      <br>
-      Black <input id="blackradio" type="radio" name="color" value="#000000">
-      <br>
-      White <input id="whiteradio" type="radio" name="color" value="#FFFFFF">
+      <br><br>
+  Select your color:
+  <input id="picker" type="color" name="favcolor" value="#ff0000">
+<br>
+      Erase <input id="whiteradio" type="checkbox" name="color" value="#FFFFFF"><br>
+
     </tr>
   </table>
+  <div class="inline" id="write"></div>
+<center><a href="#" class="button" id="check">
+    <span>I'm done drawing!</span>
+</a></center>
 
-<div id="write"></div>
 
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -53,5 +60,18 @@ DEBUGOUT: <span id="debug"></span>
 							url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
     <script src="/static/whiteboard.js"></script>
     <script src="spectrum.js"></script>
+{% else %}
+<center><h3> There are no available sentences to draw right now, sorry! </h3></center>
 {% endif %}
+{% else %}
+<br><br><br>
+	<center>
+	<font size=5 face="License Plate">You are not logged in.<br>
+	You will be automatically redirected to the login page in 3 seconds.</font>
+	</center>
+	<meta http-equiv="refresh" content="3;url=/login" />
+	<br><br>
+
+{% endif %}
+
 {% endblock %}

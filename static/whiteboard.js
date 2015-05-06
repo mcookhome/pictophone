@@ -1,9 +1,12 @@
 var canvas = document.getElementById("draw");
 var ctx = canvas.getContext("2d");
+
 var debugout = document.getElementById("debug");
+/*
 var chatmain = document.getElementById("chatmain");
 var chattext = document.getElementById("chattext");
 var chatsend = document.getElementById("chatsendbutton");
+*/
 var saveboard = document.getElementById("saveboardbutton");
 var boardname = function(a){return a[a.length-1];}
 (window.location.pathname.split("/"));
@@ -13,7 +16,8 @@ var sizedisplay = document.getElementById("sizedisplay");
 var sizeslider = document.getElementById("sizeslider");
 sizeslider.min = 1;
 sizeslider.max = 25;
-var blackradio = document.getElementById("blackradio");
+var colorpicker = document.getElementById("picker");
+//var blackradio = document.getElementById("blackradio");
 var whiteradio = document.getElementById("whiteradio");
 
 var canvasupdaterate = 1;
@@ -30,8 +34,9 @@ submission.onclick=function(){
     console.log(node.innerHTML);
     dataUrl = canvas.toDataURL();
     areusure=canvas.toDataURL("image/png");
+    node.innerHTML='<td>';
     node.innerHTML='<img src="'+areusure+'"/>';
-    node.innerHTML+='<form method="post"><input type="hidden" name="dataurl" value="'+dataUrl+'"> <button class="sbutton button-xlarge pure-button" name="submit" type="submit" value="publish">Yes!!</button> </form>';
+    node.innerHTML+='<form method="post"><input type="hidden" name="dataurl" value="'+dataUrl+'"><center><button class="sbutton button-xlarge pure-button" name="submit" type="submit" value="publish">Yes!!</button></center> </form></td>';
     console.log(node.innerHTML);
 }
 
@@ -42,7 +47,7 @@ var mlastpos;
 var mlastdown = false;
 
 var pensize = 10;
-var pencolor = "#000000";
+var pencolor = colorpicker.value;
 
 var curboard;
 var curstroke;
@@ -108,7 +113,7 @@ function getcuruser() {
     //}
     return loguser;
 }
-
+/*
 function updatechat(r) {
     chatmain.innerHTML = r.content;
     chatmain.scrollTop = chatmain.scrollHeight;
@@ -151,7 +156,7 @@ function ajaxsendstroke(stroke) {
         }
     });
 }
-
+*/
 function updatecanvas(r) {
     lastserverstroketime = r.content[r.content.length-1].time
     max = r.content.length;
@@ -230,7 +235,7 @@ function mouseup(e) {
     mdown = false;
     ajaxsendstroke(curstroke);
 }
-
+/*
 function chatkey(e) {
     if(e.keyCode==13) {
         chatsend.click();
@@ -242,14 +247,21 @@ function chatsendclick(e) {
     ajaxupdatechat();
     chattext.value = "";
 }
-
+*/
 function changepensize(e) {
     sizedisplay.innerHTML = sizeslider.value;
     pensize = sizeslider.value;
 }
 
-function setblack(e) {pencolor = "#000000";}
-function setwhite(e) {pencolor = "#FFFFFF";}
+function setcolor(e) {
+    if (whiteradio.checked){
+	pencolor="#FFFFFF";
+    }
+    else{
+	console.log(colorpicker.value);
+	pencolor = colorpicker.value;
+    }
+}
 
 
 function start() {
@@ -257,17 +269,19 @@ function start() {
     canvas.addEventListener("mousemove", mousemove);
     canvas.addEventListener("mouseup", mouseup);
     canvas.addEventListener("mousedown", mousedown);
-    chattext.addEventListener("keydown", chatkey);
+    ctx.fillStyle="white";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+/*   
+     chattext.addEventListener("keydown", chatkey);
     chatsend.addEventListener("click", chatsendclick);
+*/
     sizeslider.addEventListener("change", changepensize);
-    blackradio.addEventListener("click", setblack);
-    whiteradio.addEventListener("click", setwhite);
-    
+    colorpicker.addEventListener("change", setcolor);
+    whiteradio.addEventListener("change",setcolor);
     curboard = new Whiteboard();
 
     jQuery.getJSON("/ajax/test",
                    function(r){debugout.innerHTML = r.x;})
-    blackradio.click();
     changepensize();
     ajaxupdatechat();
     ajaxupdatecanvas();

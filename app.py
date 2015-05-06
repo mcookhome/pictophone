@@ -9,6 +9,7 @@ def index():
     if 'username' in session:
         loggedin=True
         username=session['username']
+        print username
         #myGames=manager.getUserGroups(username)
         if request.method=='POST':
             if request.form["submit"] == "Go":
@@ -20,7 +21,37 @@ def index():
     else:
         loggedin=False
         username = '-'
+        print loggedin
         return render_template("base.html", loggedin=loggedin, username=username,ids=ids)
+
+@app.route("/creategame",methods=['GET','POST'])
+def creategame():
+    ids= manager.getIDs()
+    if 'username' in session:
+        loggedin=True
+        username=session['username']
+        #myGames=manager.getUserGroups(username)
+        if request.method=='POST':
+            if request.form["submit"] == "Go":
+                if manager.getProfilePath() != "profile/":
+                    return redirect(manager.getProfilePath())
+            if request.form["submit"] == "Start":
+                gamename= request.form["name"]
+                gamescenario=request.form["styled-textarea"]
+                if (manager.exists(gamename)):
+                    reason="This name is not unique. Please try another."
+                    return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason)
+                else:
+                    manager.newGame(gamename,username,gamescenario)
+                    manager.needsDrawing(gamename,username,gamescenario)
+                    flash("Success!")
+                    return redirect("/")
+        print ids
+        return render_template("creategame.html", loggedin=loggedin, username=username,ids=ids)
+    else:
+        loggedin=False
+        username = '-'
+        return render_template("creategame.html", loggedin=loggedin, username=username,ids=ids)
 
 @app.route("/joingame",methods=['GET','POST'])
 def joingame():
@@ -40,6 +71,39 @@ def joingame():
         loggedin=False
         username = '-'
         return render_template("jumpin.html", loggedin=loggedin, username=username,ids=ids)
+
+@app.route("/write",methods=['GET','POST'])
+def write():
+    ids= manager.getIDs()
+    if 'username' in session:
+        loggedin=True
+        username=session['username']
+        gameInfo=manager.getWriteGameInfo()
+        games=True
+        if gameInfo==None:
+            games=False
+            reason= "There are currently no pictures to describe. Sorry!"
+            return render_template("write.html",loggedin=loggedin,username=username,ids=ids,reason=reason,games=games)
+        gamename=manager.revert(gameInfo[2])
+        pictureURL=manager.revert(gameInfo[3])
+        #myGames=manager.getUserGroups(username)
+        if request.method=='POST':
+            if request.form["submit"] == "Go":
+                if manager.getProfilePath() != "profile/":
+                    return redirect(manager.getProfilePath())
+            if request.form["submit"] == "Submit":
+                gamescenario=request.form["styled-textarea"]
+                manager.updateGame(gamename,username,gamescenario)
+                manager.needsDrawing(gamename,username,gamescenario)
+                manager.completeDescription(gamename)
+                flash("Success!")
+                return redirect("/")
+        return render_template("write.html", loggedin=loggedin, username=username,ids=ids,pictureURL=pictureURL,games=games)
+    else:
+        loggedin=False
+        username = '-'
+        return render_template("write.html", loggedin=loggedin, username=username,ids=ids)
+
 
 @app.route("/picture",methods=['GET','POST'])
 @app.route("/picture/<num>",methods=['GET','POST'])
@@ -67,9 +131,7 @@ def picture(num=-1):
         username = '-'
         return render_template("picture.html", loggedin=loggedin, username=username,ids=ids)
 
-@app.route("/base")
-def base():
-    return render_template("base.html")
+
 
 @app.route("/login", methods=['GET','POST'])
 def login():
@@ -136,18 +198,27 @@ def register():
 @app.route("/canvas", methods=['GET','POST'])
 def canvas():
     ids=manager.getIDs();
+    sentence=None
     if 'username' in session:
         username=session['username']
         loggedin=True
+        gameInfo=manager.getDrawGameInfo()
+        print gameInfo
+        gameName=manager.revert(gameInfo[2])
+        sentence=manager.revert(gameInfo[3])
         if request.method=='POST':
-            print request.data + "hello"
+            print "wemadeit"
             if request.form["submit"] == "publish":
                 dataUrl= request.form["dataurl"]
                 manager.storePicture(username,dataUrl)
+                manager.updateGame(gameName,username,dataUrl)
+                manager.needsDescription(gameName,username,dataUrl)
+                flash('success')
+                return redirect("/")
     else:
         loggedin=False
         username=""
-    return render_template("canvas.html",ids=ids,loggedin=loggedin)
+    return render_template("canvas.html",ids=ids,loggedin=loggedin,sentence=sentence)
 
 @app.route("/logout",methods=['GET','POST'])
 def logout():
@@ -160,6 +231,12 @@ def logout():
       print "login status: not logged in"
       return render_template("logout.html",loggedin=False, previous=False, ids=ids)
    #logout
+
+
+@app.route("/base")
+def base():
+    return render_template("base.html")
+
 
 if __name__=="__main__":
     app.debug=True

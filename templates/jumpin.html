@@ -2,16 +2,27 @@
 
 {% block content %}
 
-
+{% if loggedin %}
 
 <center><h2 class="secondary">Welcome to Pictophone!!!!</h2>
 <a href="/canvas" class="button">
     <span>Paint<br><i class="fa fa-paint-brush fa-5x"></i></span>
 </a>
-<a href="#" class="button">
+<a href="/write" class="button">
     <span>Write<br><i class="fa fa-pencil fa-5x"></i></span>
 </a>
 
 </center>
+
+{% else %}
+<br><br><br>
+	<center>
+	<font size=5 face="License Plate">You are not logged in.<br>
+	You will be automatically redirected to the login page in 3 seconds.</font>
+	</center>
+	<meta http-equiv="refresh" content="3;url=/login" />
+	<br><br>
+{% endif %}
+
 
 {% endblock %}
