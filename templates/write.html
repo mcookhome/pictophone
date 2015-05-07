@@ -9,9 +9,14 @@
   <div style="width:900px;">
 <img src="{{pictureURL}}"/>
 <h3> Instructions</h3>
+
 Your job is to describe the scene you see in this picture as accurately as possible, such that someone drawing your sentence would draw the exact same picture as what you see above.
 </div><br>
-
+{% if error %}
+<b style="color:red">{{error}}</b><br>
+{% else %}
+<br>
+{% endif %}
 <script type="text/javascript">
 function setbg(color)
 {

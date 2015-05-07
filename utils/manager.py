@@ -70,7 +70,9 @@ def needsDescription(name, username,scenario):
 def newGame(name, username, scenario):
     conn =sqlite3.connect("databases/games.db")
     c=conn.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS '" + name + "' (id integer primary key, user text, scenario text)")
+    command="CREATE TABLE IF NOT EXISTS '" + name + "' (id integer primary key, user text, scenario text)"
+    print command
+    c.execute(command)
     c.execute("INSERT INTO '"+name+"'(user,scenario) VALUES ('"+username+"','"+scenario+"')")
     conn.commit()
     conn.close()
