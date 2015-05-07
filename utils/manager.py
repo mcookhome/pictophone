@@ -154,14 +154,14 @@ def finishLogin(username):
 def finishRegistration(username,password,registered):
     conn = sqlite3.connect("databases/users.db")
     c = conn.cursor()
-    
+    reason=''
     c.execute("select * from uinfo")
     tabledata = c.fetchall()
     for d in tabledata:
         if username == d[0]:
             registered=False
             reason="The username "+username+" already exists!"
-            print "Username % is already in use" %username
+            print "Username %s is already in use" %username
             
     pvalidate = validateEntry(password)
     if pvalidate != "":
@@ -181,7 +181,7 @@ def finishRegistration(username,password,registered):
     else:
         print "Failure to register"
     conn.close()
-
+    return [registered,reason]
     
 def validateEntry(entry):
     allowChars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"

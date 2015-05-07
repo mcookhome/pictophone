@@ -3,43 +3,47 @@
 {% block content %}
 <br><br>
 <center>
-	{% if loggedin == True %}
-	<font size=20 face="License Plate">You are already logged in!</font><br>
-	<br><br>
-	<a class="pure-button sbutton" href="/logout" id="white" type = "submit"> Logout </a>
-	{% endif %}
+  {% if loggedin == True %}
+  <font size=20 face="License Plate">You are already logged in!</font><br>
+  <br><br>
+  <a class="pure-button sbutton" href="/logout" id="white" type = "submit"> Logout </a>
+  {% endif %}
 
-	{% if page==2 or page==3 and loggedin==False %}
-	<script>
-		$( "#fb" ).tooltip({ content: "<img src='../static/demo.png'" });
-	</script>
-	<div class="turq">
-		<font size=20 face="License Plate">Register</font>
-		<font color="red"><b>{{reason}}</b></font>
-		<form class="pure-form" action="register" method="post">
-			<input required type="text" name="username" placeholder="Username"></input>
-			<br>
-			<input required type="password" name="password" placeholder="Password"></input>
-			<input required type="password" name="password2" placeholder="Retype Password">
-			<br>
-			<br>
-			{% if page == 2%}
+  {% if page==2 or page==3 and loggedin==False %}
+  <script>
+    $( "#fb" ).tooltip({ content: "<img src='../static/demo.png'" });
+								 </script>
+  <div class="turq">
+    <font size=20 face="License Plate">Register</font>
+    <font color="red"><b>{{reason}}</b></font>
+    <form class="pure-form" action="register" method="post">
+      <input required type="text" name="username" placeholder="Username"></input>
+      <br>
+      <input required type="password" name="password" placeholder="Password"></input>
+      <input required type="password" name="password2" placeholder="Retype Password">
+      <br>
+      <br>
+      {% if page == 2%}
 
-			{% endif %}
-			<div>
-				<style scoped>
-					.button-small {
-						font-size: 85%;
-					}
-				</style> <br>
-				<button class="sbutton button-xlarge pure-button" type="submit">Register</button><br><br><br><br><br>
-			</div>
-		</form>
-{% endif %}
-
-{% if page==1 %}
-<font size=20 face="License Plate"> You have successfully registered!</font>
-{% endif %}
+      {% endif %}
+      <div>
+	<style scoped>
+	  .button-small {
+	  font-size: 85%;
+	  }
+	</style> <br>
+	<button class="sbutton button-xlarge pure-button" type="submit">Register</button><br><br><br><br><br>
+      </div>
+    </form>
+    {% endif %}
+    
+    {% if page==1 %}
+    <center>
+      <font size=20 face="License Plate"> You have successfully registered!<br>You will be automatically redirected to the home page in 3 seconds.</font>
+    </center>
+    <meta http-equiv="refresh" content="3;url=/" />
+    <br><br>
+    {% endif %}
 </center>
 
 {% endblock %}
