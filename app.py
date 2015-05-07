@@ -38,6 +38,12 @@ def creategame():
             if request.form["submit"] == "Start":
                 gamename= request.form["name"]
                 gamescenario=request.form["styled-textarea"]
+                if (gamename==""):
+                    reason="Please enter a game name."
+                    return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason)
+                if (gamescenario==""):
+                    reason="Please enter a scenario."
+                    return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason)
                 if (manager.exists(gamename)):
                     reason="This name is not unique. Please try another."
                     return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason)
@@ -93,6 +99,10 @@ def write():
                     return redirect(manager.getProfilePath())
             if request.form["submit"] == "Submit":
                 gamescenario=request.form["styled-textarea"]
+                if (gamescenario=="" or gamescenario=="Describe here!"):
+                    error="Please enter a scenario"
+                    print error
+                    return render_template("write.html",loggedin=loggedin,username=username,ids=ids,error=error,games=games,pictureURL=pictureURL)
                 manager.updateGame(gamename,username,gamescenario)
                 manager.needsDrawing(gamename,username,gamescenario)
                 manager.completeDescription(gamename)
@@ -204,6 +214,11 @@ def canvas():
         loggedin=True
         gameInfo=manager.getDrawGameInfo()
         print gameInfo
+        games=True
+        if gameInfo==None:
+            games=False
+            reason= "There are currently no sentences to depict. Sorry!"
+            return render_template("write.html",loggedin=loggedin,username=username,ids=ids,reason=reason,games=games)
         gameName=manager.revert(gameInfo[2])
         sentence=manager.revert(gameInfo[3])
         if request.method=='POST':
@@ -218,7 +233,7 @@ def canvas():
     else:
         loggedin=False
         username=""
-    return render_template("canvas.html",ids=ids,loggedin=loggedin,sentence=sentence)
+    return render_template("canvas.html",ids=ids,loggedin=loggedin,sentence=sentence,games=games)
 
 @app.route("/logout",methods=['GET','POST'])
 def logout():
