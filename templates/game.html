@@ -4,14 +4,15 @@
 
 
 
-<center><h2 class="secondary">Completed Games</h2>
+
 
 {% if gamelist is defined %}
+<center><h2 class="secondary">Completed Games</h2>
 {% for x in gamelist %}
 <a id="white" class="button-xlarge pure-button group-button" href="/game/{{x}}">{{x}}</a> <br>
 {% endfor %}
 {% endif %}
-
+<center><h2 class="secondary">{{name}}</h2>
 <h3 class="secondary">{{reason}}</h3>
 {% for item in gameFax %}
 {% if item[0] is odd %}
