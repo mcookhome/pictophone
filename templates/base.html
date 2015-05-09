@@ -249,14 +249,14 @@ body {
         <input class="pure-input-1-5 suggest-user" name="query" type="text" placeholder="Username" autocomplete="off"></li>
 
         <li><input class="button-small pure-button go" name="submit" type="submit"  value="Go"></li>
-        <!--<li>
-        <a id="white" href="/game">Games</a>
+        <li>
+        <a id="white" href="/game">My Games</a>
          <ul>
-           {% for game in gamelist %}
+           {% for game in myGames %}
            <li><a id="white" href="/game/{{game}}">{{game}}</a></li>
            {% endfor %}
          </ul>
-       </li>-->
+       </li>
        <li><a id="white" href="/logout">Logout</a></li>
      </form>
 

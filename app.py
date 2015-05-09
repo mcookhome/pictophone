@@ -11,14 +11,14 @@ def index():
         loggedin=True
         username=session['username']
         print username
-        #myGames=manager.getUserGroups(username)
+        myGames=manager.getUserGames(username)
         if request.method=='POST':
             if request.form["submit"] == "Go":
                 if manager.getProfilePath() != "profile/":
                     return redirect(manager.getProfilePath())
 
         print ids
-        return render_template("base.html", loggedin=loggedin, username=username,ids=ids)
+        return render_template("base.html", loggedin=loggedin, username=username,ids=ids,myGames=myGames)
     else:
         loggedin=False
         username = '-'
@@ -32,11 +32,11 @@ def game(name=None):
     if 'username' in session:
         loggedin=True
         username=session['username']
-        #myGames=manager.getUserGroups(username)
+        myGames=manager.getUserGames(username)
         if name is None:
             gamelist=manager.getCompleteGames()
             #print gamelist
-            return render_template("game.html",loggedin=loggedin,username=username,ids=ids,gamelist=gamelist)
+            return render_template("game.html",loggedin=loggedin,username=username,ids=ids,gamelist=gamelist,myGames=myGames)
         if request.method=='POST':
             if request.form["submit"] == "Go":
                 if manager.getProfilePath() != "profile/":
@@ -45,9 +45,9 @@ def game(name=None):
         gameFax=manager.getGameFax(name)
         finished=manager.isComplete(name)
         if finished is False:
-            return render_template("game.html",loggedin=loggedin,username=username,ids=ids,reason="This game is still in progress!")
+            return render_template("game.html",loggedin=loggedin,username=username,ids=ids,reason="This game is still in progress!",myGames=myGames)
         else:
-            return render_template("game.html", loggedin=loggedin, username=username,ids=ids,gameFax=gameFax,name=name)
+            return render_template("game.html", loggedin=loggedin, username=username,ids=ids,gameFax=gameFax,name=name,myGames=myGames)
     else:
         loggedin=False
         username = '-'
@@ -60,17 +60,19 @@ def profile(name=None):
     if 'username' in session:
         loggedin=True
         username=session['username']
-        #myGames=manager.getUserGroups(username)
+        myGames=manager.getUserGames(username)
+        users=manager.getAllUsers()
         if name is None:
-            users=manager.getAllUsers()
             #print users
-            return render_template("profile.html",loggedin=loggedin,username=username,ids=ids,users=users)
+            return render_template("profile.html",loggedin=loggedin,username=username,ids=ids,users=users,myGames=myGames)
         if request.method=='POST':
             if request.form["submit"] == "Go":
                 if manager.getProfilePath() != "profile/":
                     return redirect(manager.getProfilePath())
         print name
-        return render_template("profile.html", loggedin=loggedin, username=username,ids=ids,name=name)
+        if name not in users:
+            return render_template("game.html",loggedin=loggedin,username=username,ids=ids,reason="There is no user with this name",myGames=myGames)
+        return render_template("profile.html", loggedin=loggedin, username=username,ids=ids,name=name,myGames=myGames)
     else:
         loggedin=False
         username = '-'
@@ -82,7 +84,7 @@ def creategame():
     if 'username' in session:
         loggedin=True
         username=session['username']
-        #myGames=manager.getUserGroups(username)
+        myGames=manager.getUserGames(username)
         if request.method=='POST':
             if request.form["submit"] == "Go":
                 if manager.getProfilePath() != "profile/":
@@ -93,20 +95,20 @@ def creategame():
                 gamelength=request.form["turns"]
                 if (gamename==""):
                     reason="Please enter a game name."
-                    return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason)
+                    return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason,myGames=myGames)
                 if (gamescenario==""):
                     reason="Please enter a scenario."
-                    return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason)
+                    return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason,myGames=myGames)
                 if (manager.exists(gamename)):
                     reason="This name is not unique. Please try another."
-                    return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason)
+                    return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason,myGames=myGames)
                 else:
                     manager.newGame(gamename,username,gamescenario,gamelength)
                     manager.needsDrawing(gamename,username,gamescenario)
                     flash("Success!")
                     return redirect("/")
         print ids
-        return render_template("creategame.html", loggedin=loggedin, username=username,ids=ids)
+        return render_template("creategame.html", loggedin=loggedin, username=username,ids=ids,myGames=myGames)
     else:
         loggedin=False
         username = '-'
@@ -118,14 +120,14 @@ def joingame():
     if 'username' in session:
         loggedin=True
         username=session['username']
-        #myGames=manager.getUserGroups(username)
+        myGames=manager.getUserGames(username)
         if request.method=='POST':
             if request.form["submit"] == "Go":
                 if manager.getProfilePath() != "profile/":
                     return redirect(manager.getProfilePath())
 
         print ids
-        return render_template("jumpin.html", loggedin=loggedin, username=username,ids=ids)
+        return render_template("jumpin.html", loggedin=loggedin, username=username,ids=ids,myGames=myGames)
     else:
         loggedin=False
         username = '-'
@@ -137,15 +139,15 @@ def write():
     if 'username' in session:
         loggedin=True
         username=session['username']
+        myGames=manager.getUserGames(username)
         gameInfo=manager.getWriteGameInfo()
         games=True
         if gameInfo==None:
             games=False
             reason= "There are currently no pictures to describe. Sorry!"
-            return render_template("write.html",loggedin=loggedin,username=username,ids=ids,reason=reason,games=games)
+            return render_template("write.html",loggedin=loggedin,username=username,ids=ids,reason=reason,games=games,myGames=myGames)
         gamename=manager.revert(gameInfo[2])
         pictureURL=manager.revert(gameInfo[3])
-        #myGames=manager.getUserGroups(username)
         if request.method=='POST':
             if request.form["submit"] == "Go":
                 if manager.getProfilePath() != "profile/":
@@ -155,7 +157,7 @@ def write():
                 if (gamescenario=="" or gamescenario=="Describe here!"):
                     error="Please enter a scenario"
                     print error
-                    return render_template("write.html",loggedin=loggedin,username=username,ids=ids,error=error,games=games,pictureURL=pictureURL,gamename=gamename)
+                    return render_template("write.html",loggedin=loggedin,username=username,ids=ids,error=error,games=games,pictureURL=pictureURL,gamename=gamename,myGames=myGames)
                 done=manager.updateGame(gamename,username,gamescenario)
                 manager.completeDescription(gamename)
                 if (done is False):
@@ -163,7 +165,7 @@ def write():
                     manager.needsDrawing(gamename,username,gamescenario)
                 flash("Success!")
                 return redirect("/")
-        return render_template("write.html", loggedin=loggedin, username=username,ids=ids,pictureURL=pictureURL,games=games,gamename=gamename)
+        return render_template("write.html", loggedin=loggedin, username=username,ids=ids,pictureURL=pictureURL,games=games,gamename=gamename,myGames=myGames)
     else:
         loggedin=False
         username = '-'
@@ -178,7 +180,7 @@ def picture(num=-1):
     if 'username' in session:
         loggedin=True
         username=session['username']
-        #myGames=manager.getUserGroups(username)
+        myGames=manager.getUserGames(username)
         if request.method=='POST':
             if request.form["submit"] == "Go":
                 if manager.getProfilePath() != "profile/":
@@ -188,9 +190,9 @@ def picture(num=-1):
         print num
         dataUrl=manager.getPicture(num)
         if dataUrl == -1:
-            return render_template("picture.html",loggedin=loggedin,username=username,ids=ids,reason="There is no picture with that ID!")
+            return render_template("picture.html",loggedin=loggedin,username=username,ids=ids,reason="There is no picture with that ID!",myGames=myGames)
         else:
-            return render_template("picture.html", loggedin=loggedin, username=username,ids=ids,dataUrl=dataUrl)
+            return render_template("picture.html", loggedin=loggedin, username=username,ids=ids,dataUrl=dataUrl,myGames=myGames)
     else:
         loggedin=False
         username = '-'
@@ -203,7 +205,9 @@ def login():
     ids= manager.getIDs()
     if 'username' in session:
         luser = session['username']
-        return render_template("login.html", loggedin=True, username=luser,ids=ids)
+        myGames=manager.getUserGames(luser)
+        print myGames
+        return render_template("login.html", loggedin=True, username=luser,ids=ids,myGames=myGames)
     
     if request.method=='POST':
         username = request.form['username']
@@ -270,13 +274,14 @@ def canvas():
     if 'username' in session:
         username=session['username']
         loggedin=True
+        myGames=manager.getUserGames(username)
         gameInfo=manager.getDrawGameInfo()
         print gameInfo
         games=True
         if gameInfo==None:
             games=False
             reason= "There are currently no sentences to depict. Sorry!"
-            return render_template("write.html",loggedin=loggedin,username=username,ids=ids,reason=reason,games=games)
+            return render_template("write.html",loggedin=loggedin,username=username,ids=ids,reason=reason,games=games,myGames=myGames)
         gameName=manager.revert(gameInfo[2])
         sentence=manager.revert(gameInfo[3])
         if request.method=='POST':
