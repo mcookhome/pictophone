@@ -47,7 +47,7 @@ def game(name=None):
         if finished is False:
             return render_template("game.html",loggedin=loggedin,username=username,ids=ids,reason="This game is still in progress!")
         else:
-            return render_template("game.html", loggedin=loggedin, username=username,ids=ids,gameFax=gameFax)
+            return render_template("game.html", loggedin=loggedin, username=username,ids=ids,gameFax=gameFax,name=name)
     else:
         loggedin=False
         username = '-'
