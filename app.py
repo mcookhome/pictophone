@@ -5,6 +5,7 @@ app=Flask(__name__)
 
 @app.route("/",methods=['GET','POST'])
 def index():
+    print manager.getGames()
     ids= manager.getIDs()
     if 'username' in session:
         loggedin=True
@@ -24,6 +25,34 @@ def index():
         print loggedin
         return render_template("base.html", loggedin=loggedin, username=username,ids=ids)
 
+@app.route("/game",methods=['GET','POST'])
+@app.route("/game/<name>",methods=['GET','POST'])
+def game(name=None):
+    ids= manager.getIDs()
+    if 'username' in session:
+        loggedin=True
+        username=session['username']
+        #myGames=manager.getUserGroups(username)
+        if name is None:
+            gamelist=manager.getCompleteGames()
+            #print gamelist
+            return render_template("game.html",loggedin=loggedin,username=username,ids=ids,gamelist=gamelist)
+        if request.method=='POST':
+            if request.form["submit"] == "Go":
+                if manager.getProfilePath() != "profile/":
+                    return redirect(manager.getProfilePath())
+        print name
+        gameFax=manager.getGameFax(name)
+        finished=manager.isComplete(name)
+        if finished is False:
+            return render_template("game.html",loggedin=loggedin,username=username,ids=ids,reason="This game is still in progress!")
+        else:
+            return render_template("game.html", loggedin=loggedin, username=username,ids=ids,gameFax=gameFax)
+    else:
+        loggedin=False
+        username = '-'
+        return render_template("game.html", loggedin=loggedin, username=username,ids=ids)
+
 @app.route("/creategame",methods=['GET','POST'])
 def creategame():
     ids= manager.getIDs()
@@ -38,6 +67,7 @@ def creategame():
             if request.form["submit"] == "Start":
                 gamename= request.form["name"]
                 gamescenario=request.form["styled-textarea"]
+                gamelength=request.form["turns"]
                 if (gamename==""):
                     reason="Please enter a game name."
                     return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason)
@@ -48,7 +78,7 @@ def creategame():
                     reason="This name is not unique. Please try another."
                     return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason)
                 else:
-                    manager.newGame(gamename,username,gamescenario)
+                    manager.newGame(gamename,username,gamescenario,gamelength)
                     manager.needsDrawing(gamename,username,gamescenario)
                     flash("Success!")
                     return redirect("/")
@@ -102,13 +132,15 @@ def write():
                 if (gamescenario=="" or gamescenario=="Describe here!"):
                     error="Please enter a scenario"
                     print error
-                    return render_template("write.html",loggedin=loggedin,username=username,ids=ids,error=error,games=games,pictureURL=pictureURL)
-                manager.updateGame(gamename,username,gamescenario)
-                manager.needsDrawing(gamename,username,gamescenario)
+                    return render_template("write.html",loggedin=loggedin,username=username,ids=ids,error=error,games=games,pictureURL=pictureURL,gamename=gamename)
+                done=manager.updateGame(gamename,username,gamescenario)
                 manager.completeDescription(gamename)
+                if (done is False):
+                    print "are we here- write"
+                    manager.needsDrawing(gamename,username,gamescenario)
                 flash("Success!")
                 return redirect("/")
-        return render_template("write.html", loggedin=loggedin, username=username,ids=ids,pictureURL=pictureURL,games=games)
+        return render_template("write.html", loggedin=loggedin, username=username,ids=ids,pictureURL=pictureURL,games=games,gamename=gamename)
     else:
         loggedin=False
         username = '-'
@@ -229,8 +261,9 @@ def canvas():
             if request.form["submit"] == "publish":
                 dataUrl= request.form["dataurl"]
                 manager.storePicture(username,dataUrl)
-                manager.updateGame(gameName,username,dataUrl)
-                manager.needsDescription(gameName,username,dataUrl)
+                done=manager.updateGame(gameName,username,dataUrl)
+                if (done is False):
+                    manager.needsDescription(gameName,username,dataUrl)
                 flash('success')
                 return redirect("/")
     else:
