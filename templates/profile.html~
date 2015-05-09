@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+
+
+{% if gamelist is defined %}
+<center><h2 class="secondary">Completed Games</h2>
+{% for x in gamelist %}
+<a id="white" class="button-xlarge pure-button group-button" href="/game/{{x}}">{{x}}</a> <br>
+{% endfor %}
+{% endif %}
+<center><h2 class="secondary">{{name}}</h2>
+<h3 class="secondary">{{reason}}</h3>
+{% for item in gameFax %}
+{% if item[0] is odd %}
+Sentence {{((item[0]/2)+0.5) | int}}:<b>{{item[1]}}{{item[2]}}</b><br>
+{% else %}
+<img src="{{item[2]}}"/><b>{{item[1]}}</b><br>
+{% endif %}
+  {% endfor %}
+
+
+{% endblock %}

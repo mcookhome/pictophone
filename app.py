@@ -53,6 +53,29 @@ def game(name=None):
         username = '-'
         return render_template("game.html", loggedin=loggedin, username=username,ids=ids)
 
+@app.route("/profile",methods=['GET','POST'])
+@app.route("/profile/<name>",methods=['GET','POST'])
+def profile(name=None):
+    ids= manager.getIDs()
+    if 'username' in session:
+        loggedin=True
+        username=session['username']
+        #myGames=manager.getUserGroups(username)
+        if name is None:
+            users=manager.getAllUsers()
+            #print users
+            return render_template("profile.html",loggedin=loggedin,username=username,ids=ids,users=users)
+        if request.method=='POST':
+            if request.form["submit"] == "Go":
+                if manager.getProfilePath() != "profile/":
+                    return redirect(manager.getProfilePath())
+        print name
+        return render_template("profile.html", loggedin=loggedin, username=username,ids=ids,name=name)
+    else:
+        loggedin=False
+        username = '-'
+        return render_template("profile.html", loggedin=loggedin, username=username,ids=ids)
+
 @app.route("/creategame",methods=['GET','POST'])
 def creategame():
     ids= manager.getIDs()

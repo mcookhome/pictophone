@@ -14,6 +14,15 @@ def getIDs():
     ids[:]=[unicodedata.normalize('NFKD',o).encode('ascii','ignore') for o in ids]
     return ids
 
+def getProfilePath():
+    ids=getIDs()
+    user=request.form["query"]
+    path="profile/"+user
+    #if user not in ids:
+     #   return ""
+    print path
+    return path
+
 def isComplete(name):
     conn=sqlite3.connect("databases/games.db")
     c=conn.cursor()
@@ -157,6 +166,16 @@ def getCompleteGames():
         if isComplete(n) is True:
             completegames.append(n)
     return completegames
+
+def getAllUsers():
+    conn = sqlite3.connect('databases/users.db')
+    with conn:
+        cursor = conn.cursor()    
+        cursor.execute("SELECT username FROM uinfo")
+        rows = cursor.fetchall()
+        rows = [x[0] for x in rows]
+        rows[:]=[unicodedata.normalize('NFKD',o).encode('ascii','ignore') for o in rows]
+        return rows
 
 def storePicture(username, dataUrl):
     conn = sqlite3.connect("databases/pictures.db")
