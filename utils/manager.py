@@ -14,9 +14,36 @@ def getIDs():
     ids[:]=[unicodedata.normalize('NFKD',o).encode('ascii','ignore') for o in ids]
     return ids
 
+def isComplete(name):
+    conn=sqlite3.connect("databases/games.db")
+    c=conn.cursor()
+    c.execute("select turns from '"+name+"' where id=1")
+    tabledata=c.fetchall()
+    turns=tabledata[0][0]
+    print turns
+    c.execute("SELECT MAX(id) from '"+name+"'")
+    maxid= c.fetchall()
+    currentlength=maxid[0][0]
+    conn.commit()
+    conn.close()
+    if currentlength==turns:
+        print "complete"
+        return True
+    print "incomplete"
+    return False
+
+def getGameFax(name):
+    conn=sqlite3.connect("databases/games.db")
+    c=conn.cursor()
+    c.execute("select id,user,scenario from '"+name+"'")
+    tabledata=c.fetchall()
+    tabledata[:]=[[item[0],item[1],item[2]] for item in tabledata]
+    for n in tabledata:
+        n[1:]=[unicodedata.normalize('NFKD',o).encode('ascii','ignore') for o in n[1:]]
+    return tabledata
 
 def getDrawGameInfo():#returns tuple as follows (game id, username of recent contributor, game name, game scenario, completion status)
-    conn=sqlite3.connect("databases/todraw.db")
+    conn=sqlite3.connect("databases/todo.db")
     c=conn.cursor()
     c.execute("select * from todraw where id=(SELECT MIN(id) FROM todraw WHERE completed='no')")
     tabledata=c.fetchall()
@@ -28,7 +55,7 @@ def getDrawGameInfo():#returns tuple as follows (game id, username of recent con
     return tabledata[0]
     
 def getWriteGameInfo():#returns tuple as follows (game id, username of recent contributor, game name, picture daraurl, completion status)
-    conn=sqlite3.connect("databases/todescribe.db")
+    conn=sqlite3.connect("databases/todo.db")
     c=conn.cursor()
     c.execute("select * from todescribe where id=(SELECT MIN(id) FROM todescribe WHERE completed='no')")
     tabledata=c.fetchall()
@@ -40,7 +67,7 @@ def getWriteGameInfo():#returns tuple as follows (game id, username of recent co
     return tabledata[0]
 
 def needsDrawing(name, username,scenario):
-    conn=sqlite3.connect("databases/todraw.db")
+    conn=sqlite3.connect("databases/todo.db")
     c = conn.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS 'todraw' (id integer primary key, user text, name text, scenario text,completed text)")
     c.execute("INSERT INTO todraw(user,name,scenario,completed) VALUES ('"+username+"','"+name+"','"+scenario+"','no')")
@@ -48,41 +75,54 @@ def needsDrawing(name, username,scenario):
     conn.close()
 
 def completeDescription(name):
-    conn=sqlite3.connect("databases/todescribe.db")
+    conn=sqlite3.connect("databases/todo.db")
     c=conn.cursor()
     c.execute("update todescribe set completed='yes' where name='"+name+"'")
     conn.commit()
     conn.close()
 
 def needsDescription(name, username,scenario):
-    conn=sqlite3.connect("databases/todraw.db")
+    conn=sqlite3.connect("databases/todo.db")
     c=conn.cursor()
     c.execute("update todraw set completed='yes' where name='"+name+"'")
     conn.commit()
     conn.close()
-    conn=sqlite3.connect("databases/todescribe.db")
+    conn=sqlite3.connect("databases/todo.db")
     c = conn.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS 'todescribe' (id integer primary key, user text, name text, scenario text,completed text)")
     c.execute("INSERT INTO todescribe(user,name,scenario,completed) VALUES ('"+username+"','"+name+"','"+scenario+"','no')")
     conn.commit()
     conn.close()
     
-def newGame(name, username, scenario):
+def newGame(name, username, scenario,turns):
     conn =sqlite3.connect("databases/games.db")
     c=conn.cursor()
-    command="CREATE TABLE IF NOT EXISTS '" + name + "' (id integer primary key, user text, scenario text)"
+    command="CREATE TABLE IF NOT EXISTS '" + name + "' (id integer primary key, user text, scenario text, turns int)"
     print command
     c.execute(command)
-    c.execute("INSERT INTO '"+name+"'(user,scenario) VALUES ('"+username+"','"+scenario+"')")
+    c.execute("INSERT INTO '"+name+"'(user,scenario,turns) VALUES ('"+username+"','"+scenario+"','"+turns+"')")
     conn.commit()
     conn.close()
 
 def updateGame(name, username, scenario):
     conn=sqlite3.connect("databases/games.db")
     c=conn.cursor()
-    c.execute("INSERT INTO '"+name+"'(user,scenario) VALUES ('"+ username+"','"+scenario+"')")
+    c.execute("select turns from '"+name+"' where id=1")
+    tabledata=c.fetchall()
+    turns=tabledata[0][0]
+    print turns
+    c.execute("INSERT INTO '"+name+"'(user,scenario,turns) VALUES ('"+ username+"','"+scenario+"',"+str(turns)+")")
+    c.execute("SELECT MAX(id) from '"+name+"'")
+    maxid= c.fetchall()
+    currentlength=maxid[0][0]
+    print str(currentlength)+"BLAH"
     conn.commit()
     conn.close()
+    if currentlength==turns:
+        print True
+        return True
+    print False
+    return False
 
 def exists(name):
     conn=sqlite3.connect("databases/games.db")
@@ -98,7 +138,8 @@ def exists(name):
         return True
     return False
     
-def getTables():
+
+def getGames():
     conn = sqlite3.connect('databases/games.db')
     with conn:
         cursor = conn.cursor()    
@@ -108,6 +149,14 @@ def getTables():
         rows = [x[0] for x in rows]
         rows[:]=[unicodedata.normalize('NFKD',o).encode('ascii','ignore') for o in rows]
         return rows
+
+def getCompleteGames():
+    games=getGames()
+    completegames=[]
+    for n in games:
+        if isComplete(n) is True:
+            completegames.append(n)
+    return completegames
 
 def storePicture(username, dataUrl):
     conn = sqlite3.connect("databases/pictures.db")
