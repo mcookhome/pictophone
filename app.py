@@ -246,12 +246,13 @@ def register():
             reppassword = request.form['password2']
             reason = ""
             registered=False
-
+            matchpass = True
             if password == reppassword:
                 registered=True
             else:
                 registered=False
                 reason = "Passwords do not match"
+                matchpass = False
                 print "Passwords do not match"
             info= manager.finishRegistration(username,password,registered)
             registered=info[0]
