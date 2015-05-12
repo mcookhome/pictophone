@@ -252,11 +252,14 @@ def register():
             else:
                 registered=False
                 reason = "Passwords do not match"
-                matchpass = False
+                if len(password)>4 and len(password)<16 and len(reppassword)>4 and len(reppassword)<16:
+                    matchpass = False
                 print "Passwords do not match"
             info= manager.finishRegistration(username,password,registered)
             registered=info[0]
             reason=info[1]
+            if not matchpass:
+                reason = "Passwords do not match"
             if registered:
                 session['username']=username
                 return render_template("register.html", page=1, username=username,ids=ids)
