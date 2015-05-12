@@ -10,14 +10,17 @@ sees the scene Player 2 drew, and writes a sentence. Player 4 draws a picture ba
 wrote and the game goes on. It is designed to simply be funny, not a competetive game. 
 ### Checkpoints/Timeline
 * Hubert- Html and web design
- * base html files by: 5/1
- * login by: 5/4
- * percent match (optional): 5/8
+ * base html files by: 5/1 (done)
+ * login by: 5/4 (done)
+ * percent match (optional): 5/8 (WIP)
+ * sentence match algorithm: 5/18
 * Matt and Andrew- database (SQL) and Flask
- * flask and database setup by: 5/6
- * login connected to db: 5/6 
- * database stores canvas: 5/12
+ * flask and database setup by: 5/6 (done)
+ * login connected to db: 5/6 (done)
+ * database stores canvas: 5/12 (done)
+ * debugging and optimization: continuously
 * Victor and Dionis- Javascript (d3)
- * javascript for login by: 5/6 
- * canvas existing and debugging: 5/8
- * canvas working by: 5/12
+ * javascript for login by: 5/6 (scrapped)
+ * canvas existing and debugging: 5/8 (done)
+ * canvas working by: 5/12 (done)
+ * more canvas functioning: continuously
