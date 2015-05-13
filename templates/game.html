@@ -16,7 +16,7 @@
 <h3 class="secondary">{{reason}}</h3>
 {% for item in gameFax %}
 {% if item[0] is odd %}
-Sentence {{((item[0]/2)+0.5) | int}}:<b>{{item[1]}}{{item[2]}}</b><br>
+Sentence {{((item[0]/2)+0.5) | int}}:<b>{{item[2]}} -- {{item[1]}}</b><br>
 {% else %}
 <img src="{{item[2]}}"/><b>{{item[1]}}</b><br>
 {% endif %}
