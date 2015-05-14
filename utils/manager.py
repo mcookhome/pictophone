@@ -41,6 +41,28 @@ def isComplete(name):
     print "incomplete"
     return False
 
+def getMembers(game):
+    conn = sqlite3.connect('databases/games.db')
+    
+    with conn:
+        
+        cursor = conn.cursor()    
+        cursor.execute("SELECT user FROM '"+ game+"'")
+    
+        rows = cursor.fetchall()
+        rows = [x[0] for x in rows]
+        rows[:]=[unicodedata.normalize('NFKD',o).encode('ascii','ignore') for o in rows]
+        return rows
+
+def getUserGames(username):
+	games = getGames()
+	gameNames = []
+	for x in games:
+		if username in getMembers(x):
+			gameNames.append(x)
+	print gameNames
+	return gameNames
+
 def getGameFax(name):
     conn=sqlite3.connect("databases/games.db")
     c=conn.cursor()
