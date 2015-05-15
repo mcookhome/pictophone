@@ -29,14 +29,15 @@ var areusure;
 
 var submission=document.getElementById("check");
 var node=document.getElementById("write");
+var checkbutton = document.getElementById("checkbutton")
 
 submission.onclick=function(){
     console.log(node.innerHTML);
     dataUrl = canvas.toDataURL();
     areusure=canvas.toDataURL("image/png");
-    node.innerHTML='<td>';
     node.innerHTML='<img src="'+areusure+'"/>';
-    node.innerHTML+='<form method="post"><input type="hidden" name="dataurl" value="'+dataUrl+'"><center><button class="sbutton button-xlarge pure-button" name="submit" type="submit" value="publish">Yes!!</button></center> </form></td>';
+    node.innerHTML+='<form method="post"><input type="hidden" name="dataurl" value="'+dataUrl+'">';
+    checkbutton.innerHTML='<center><button class="sbutton button-xlarge pure-button" name="submit" type="submit" value="publish">Submit Final Drawing</button></center> </form>';
     console.log(node.innerHTML);
 }
 
