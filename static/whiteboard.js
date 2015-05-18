@@ -36,9 +36,9 @@ submission.onclick=function(){
     dataUrl = canvas.toDataURL();
     areusure=canvas.toDataURL("image/png");
     node.innerHTML='<img src="'+areusure+'"/>';
-    node.innerHTML+='<form method="post"><input type="hidden" name="dataurl" value="'+dataUrl+'">';
-    checkbutton.innerHTML='<center><button class="sbutton button-xlarge pure-button" name="submit" type="submit" value="publish">Submit Final Drawing</button></center> </form>';
+    checkbutton.innerHTML='<form method="post"><input type="hidden" name="dataurl" value="'+dataUrl+'"><center><button class="button" name="submit" type="submit" value="publish"><span>Submit Final Drawing</span></button></center> </form>';
     console.log(node.innerHTML);
+    this.innerHTML="<span>Update Drawing</span>";
 }
 
 
