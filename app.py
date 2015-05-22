@@ -314,7 +314,10 @@ def logout():
       return render_template("logout.html",loggedin=False, previous=False, ids=ids)
    #logout
 
-
+@app.route("/wipe")
+def wipe():
+    manager.wipegames()
+    return redirect("/")
 @app.route("/base")
 def base():
     return render_template("base.html")
@@ -323,6 +326,7 @@ def base():
 if __name__=="__main__":
     app.debug=True
     app.secret_key="Dankmemesbro"
+    manager.setup()
     app.run()
-
+    
 #testbranch

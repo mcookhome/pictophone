@@ -1,4 +1,0 @@
-console.log("Hello");
-
-var canvas=d3.select("#content")
-    .append("canvas")

@@ -1,7 +1,38 @@
 from flask import Flask, render_template, request, session,redirect,url_for
 import csv, unicodedata, requests, sqlite3
 
-
+def setup():
+    conn = sqlite3.connect("databases/user.db")
+    c = conn.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS 'uinfo' (username text, password text)")
+    conn = sqlite3.connect("databases/todo.db")
+    c= conn.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS 'todraw' (id integer primary key, user text, name text, scenario text,completed text)")
+    c.execute("CREATE TABLE IF NOT EXISTS 'todescribe' (id integer primary key, user text, name text, scenario text,completed text)")
+    conn = sqlite3.connect("databases/pictures.db")
+    c=conn.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS PICTURES (id integer primary key, user text, picture text)")
+    
+def wipegames():
+    conn = sqlite3.connect("databases/todo.db")
+    c= conn.cursor()
+    c.execute("DROP TABLE IF EXISTS 'todraw'")
+    c.execute("DROP TABLE IF EXISTS 'todescribe'")
+    conn = sqlite3.connect("databases/pictures.db")
+    c=conn.cursor()
+    c.execute("DROP TABLE IF EXISTS PICTURES")
+    conn = sqlite3.connect("databases/games.db")
+    c= conn.cursor()
+    c.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")
+    names= c.fetchall()
+    for i in names:
+        c.execute("DROP TABLE IF EXISTS '"+i[0]+"'")
+    setup()
+def wipeusers():
+    conn = sqlite3.connect("databases/user.db")
+    c= conn.cursor()
+    c.execute("DROP TABLE IF EXISTS 'uinfo'")
+    setup()
 def getIDs():
     ids=[]
     conn = sqlite3.connect("databases/users.db")
@@ -100,7 +131,6 @@ def getWriteGameInfo():#returns tuple as follows (game id, username of recent co
 def needsDrawing(name, username,scenario):
     conn=sqlite3.connect("databases/todo.db")
     c = conn.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS 'todraw' (id integer primary key, user text, name text, scenario text,completed text)")
     c.execute("INSERT INTO todraw(user,name,scenario,completed) VALUES ('"+username+"','"+name+"','"+scenario+"','no')")
     conn.commit()
     conn.close()
@@ -120,7 +150,6 @@ def needsDescription(name, username,scenario):
     conn.close()
     conn=sqlite3.connect("databases/todo.db")
     c = conn.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS 'todescribe' (id integer primary key, user text, name text, scenario text,completed text)")
     c.execute("INSERT INTO todescribe(user,name,scenario,completed) VALUES ('"+username+"','"+name+"','"+scenario+"','no')")
     conn.commit()
     conn.close()
@@ -201,11 +230,9 @@ def getAllUsers():
 
 def storePicture(username, dataUrl):
     conn = sqlite3.connect("databases/pictures.db")
-    cursor = conn.cursor()
-    command = "CREATE TABLE IF NOT EXISTS PICTURES (id integer primary key, user text, picture text)"
-    cursor.execute(command)
+    c = conn.cursor()
     putPic = "INSERT INTO PICTURES(user,picture) VALUES ('"+username+"','"+dataUrl+"')"
-    cursor.execute(putPic)
+    c.execute(putPic)
     conn.commit()
     conn.close()
 
