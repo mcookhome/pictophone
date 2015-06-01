@@ -33,14 +33,15 @@ def game(name=None):
         loggedin=True
         username=session['username']
         myGames=manager.getUserGames(username)
-        if name is None:
-            gamelist=manager.getCompleteGames()
-            #print gamelist
-            return render_template("game.html",loggedin=loggedin,username=username,ids=ids,gamelist=gamelist,myGames=myGames)
+        
         if request.method=='POST':
             if request.form["submit"] == "Go":
                 if manager.getProfilePath() != "profile/":
                     return redirect(manager.getProfilePath())
+        if name is None:
+            gamelist=manager.getCompleteGames()
+            #print gamelist
+            return render_template("game.html",loggedin=loggedin,username=username,ids=ids,gamelist=gamelist,myGames=myGames)
         print name
         gameFax=manager.getGameFax(name)
         finished=manager.isComplete(name)
@@ -72,7 +73,8 @@ def profile(name=None):
         print name
         if name not in users:
             return render_template("game.html",loggedin=loggedin,username=username,ids=ids,reason="There is no user with this name",myGames=myGames)
-        return render_template("profile.html", loggedin=loggedin, username=username,ids=ids,name=name,myGames=myGames)
+        usersgames= manager.getUserGames(name)
+        return render_template("profile.html", loggedin=loggedin, username=username,ids=ids,name=name,myGames=myGames,usersgames=usersgames)
     else:
         loggedin=False
         username = '-'
