@@ -1,6 +1,6 @@
 # pictophone
 
-PICTOPHONE - 45.55.183.87:8000
+PICTOPHONE - http://45.55.183.87:8000
 
 ## Description
 Pictophone.
