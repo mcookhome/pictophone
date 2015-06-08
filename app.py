@@ -93,6 +93,12 @@ def creategame():
                 gamename= request.form["name"]
                 gamescenario=request.form["styled-textarea"]
                 gamelength=request.form["turns"]
+                needspass=request.form["check"]
+                if needspass=="needs":
+                    gamepass=request.form["gamepassword"]
+                if (needspass=="needs" and gamepass==""):
+                    reason="Please enter a password or uncheck the box."
+                    return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason,myGames=myGames)
                 if (gamename==""):
                     reason="Please enter a game name."
                     return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason,myGames=myGames)
