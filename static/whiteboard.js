@@ -21,6 +21,8 @@ var colorpicker = document.getElementById("picker");
 var whiteradio = document.getElementById("whiteradio");
 var line = document.getElementById("line");
 var linebool = false;
+var randcol = document.getElementById("randcol");
+var randcolbool = false;
 var eccen = document.getElementById("eccen");
 eccen.min = 0;
 eccen.max = 25;
@@ -237,6 +239,13 @@ function mousemove(e) {
 		curstroke.addPoint(mpos.x, mpos.y);
 
 	    }
+	    else if(randcolbool){
+		paintline(mlastpos.x, mlastpos.y, mpos.x, mpos.y, pensize, "#"+((1<<24)*Math.random()|0).toString(16));
+		curstroke.addPoint(mpos.x, mpos.y);
+	    }
+	    else if(brush3bool){
+
+	    }
         } else {
             curstroke = new Stroke(getcuruser(),pensize,pencolor,"CLIENT");
             curboard.addStroke(curstroke);
@@ -277,7 +286,7 @@ function eccenchange(e) {
     sizedisplay2.innerHTML = eccen.value;
     eccenval = eccen.value;
 }
-    
+
 
 function setcolor(e) {
     if (whiteradio.checked){
@@ -299,6 +308,15 @@ function lineswitch(e) {
     console.log(linebool);
 }
 
+function randcolswitch(e){
+    if(randcol.checked){
+	randcolbool = true;
+    }
+    else{
+	randcolbool = false;
+    }
+    console.log(randcolbool);
+}
 
 
 function start() {
@@ -316,6 +334,7 @@ function start() {
     colorpicker.addEventListener("change", setcolor);
     whiteradio.addEventListener("change",setcolor);
     line.addEventListener("change", lineswitch);
+    randcol.addEventListener("change", randcolswitch);
     eccen.addEventListener("change", eccenchange);
     curboard = new Whiteboard();
 
