@@ -19,6 +19,13 @@ sizeslider.max = 25;
 var colorpicker = document.getElementById("picker");
 //var blackradio = document.getElementById("blackradio");
 var whiteradio = document.getElementById("whiteradio");
+var line = document.getElementById("line");
+var linebool = false;
+var eccen = document.getElementById("eccen");
+eccen.min = 0;
+eccen.max = 25;
+console.log(line + "Line works");
+
 
 var canvasupdaterate = 1;
 var chatupdaterate = 1;
@@ -210,20 +217,32 @@ function paintline(x1,y1,x2,y2,width,color) {
     ctx.stroke();
 }
 
+//test
 function mousemove(e) {
     mpos = getMousePos(canvas,e);
     //debugout.innerHTML = "X: " + mpos.x + "<br>" + "Y: " + mpos.y;
     if(mdown) {
         paintcircle(mpos.x, mpos.y, pensize/2, pencolor);
         if(mlastdown) {
-            paintline(mlastpos.x, mlastpos.y, mpos.x, mpos.y, pensize, pencolor);
-            curstroke.addPoint(mpos.x, mpos.y);
-            debugout.innerHTML = "!!!";
+	    if(!linebool){
+		paintline(mlastpos.x, mlastpos.y, mpos.x, mpos.y, pensize, pencolor);
+		curstroke.addPoint(mpos.x, mpos.y);
+		debugout.innerHTML = "!!!";
+	    }
+	    else if(linebool){
+		paintcircle(mpos.x+eccenval, mpos.y, pensize, pencolor);
+		paintcircle(mpos.x-eccenval, mpos.y, pensize, pencolor);
+		paintcircle(mpos.x, mpos.y+eccenval, pensize, pencolor);
+		paintcircle(mpos.x, mpos.y-eccenval, pensize, pencolor);
+		curstroke.addPoint(mpos.x, mpos.y);
+
+	    }
         } else {
             curstroke = new Stroke(getcuruser(),pensize,pencolor,"CLIENT");
             curboard.addStroke(curstroke);
             curstroke.addPoint(mpos.x, mpos.y);
         }
+	
     }
     
     mlastpos = mpos;
@@ -234,7 +253,7 @@ function mousemove(e) {
 function mousedown(e) {mdown = true;}
 function mouseup(e) {
     mdown = false;
-    ajaxsendstroke(curstroke);
+    //ajaxsendstroke(curstroke);
 }
 /*
 function chatkey(e) {
@@ -254,6 +273,12 @@ function changepensize(e) {
     pensize = sizeslider.value;
 }
 
+function eccenchange(e) {
+    sizedisplay2.innerHTML = eccen.value;
+    eccenval = eccen.value;
+}
+    
+
 function setcolor(e) {
     if (whiteradio.checked){
 	pencolor="#FFFFFF";
@@ -263,6 +288,17 @@ function setcolor(e) {
 	pencolor = colorpicker.value;
     }
 }
+
+function lineswitch(e) {
+    if (line.checked){
+	linebool = true;
+    }
+    else{
+	linebool = false;
+    }
+    console.log(linebool);
+}
+
 
 
 function start() {
@@ -279,6 +315,8 @@ function start() {
     sizeslider.addEventListener("change", changepensize);
     colorpicker.addEventListener("change", setcolor);
     whiteradio.addEventListener("change",setcolor);
+    line.addEventListener("change", lineswitch);
+    eccen.addEventListener("change", eccenchange);
     curboard = new Whiteboard();
 
     jQuery.getJSON("/ajax/test",
@@ -289,3 +327,5 @@ function start() {
 }
 
 start();
+
+
