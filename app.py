@@ -2,6 +2,7 @@ from flask import Flask,request,url_for,redirect,render_template,session,flash
 from utils import manager
 
 app=Flask(__name__)
+app.secret_key="Dankmemesbro"
 
 @app.route("/",methods=['GET','POST'])
 def index():
@@ -327,6 +328,6 @@ if __name__=="__main__":
     app.debug=True
     app.secret_key="Dankmemesbro"
     manager.setup()
-    app.run()
+    app.run(host='0.0.0.0')
     
 #testbranch
