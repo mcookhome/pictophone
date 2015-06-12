@@ -313,3 +313,14 @@ def validateEntry(entry):
 def revert(x):
     x=unicodedata.normalize('NFKD',x).encode('ascii','ignore')    
     return x
+
+def newPrivateGame(name, username, scenario,turns,password):
+    conn =sqlite3.connect("databases/games.db")
+    c=conn.cursor()
+    command="CREATE TABLE IF NOT EXISTS '" + name + "' (id integer primary key, user text, scenario text, turns int)"
+    print command
+    c.execute(command)
+    c.execute("INSERT INTO '"+name+"'(user,scenario,turns,password) VALUES ('"+username+"','"+scenario+"','"+turns+"','"+password+"')")
+    conn.commit()
+    conn.close()
+
