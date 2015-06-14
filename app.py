@@ -94,6 +94,7 @@ def creategame():
                 gamename= request.form["name"]
                 gamescenario=request.form["styled-textarea"]
                 gamelength=request.form["turns"]
+                gamepass=request.form["password"]
                 if (gamename==""):
                     reason="Please enter a game name."
                     return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason,myGames=myGames)
@@ -104,7 +105,10 @@ def creategame():
                     reason="This name is not unique. Please try another."
                     return render_template("creategame.html",loggedin=loggedin,username=username,ids=ids,reason=reason,myGames=myGames)
                 else:
-                    manager.newGame(gamename,username,gamescenario,gamelength)
+                    if (gamepass==""):
+                        manager.newGame(gamename,username,gamescenario,gamelength)
+                    else:
+                        manager.newPrivateGame(gamename,username,gamescenario,gamelength,gamepass)
                     manager.needsDrawing(gamename,username,gamescenario)
                     flash("Success!")
                     return redirect("/")
