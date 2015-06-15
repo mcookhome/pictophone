@@ -73,12 +73,30 @@ def wordMatch(original, typed):
             points += 1
             return points
 
+if __name__ == "__main__":
+    #Result: 0.716589861751
+    test1 = "Man riding a bicycle with a banana"
+    test2= "man riding a bike with a fruit"
+    print match(test1, test2)
+    
+    #Result: 0.947004608295
+    test1 = "Man riding a bicycle with a banana"
+    test2 = "man riding a bike with a banana"
+    print match(test1, test2)
 
-test1 = "Man riding a bicycle with a banana"
-test2= "man riding a bike with a fruit"
+    #Result: 0.298275862069
+    test1 = "some guy is using a bike and eating a banana"
+    test2 = "man riding a bike with a banana"
+    print match(test1, test2)
+    
+    #Result: -0.0362068965517
+    test1 = "some guy is using a bike and eating a banana"
+    test2 = "Someone walking on a bridge falls"
+    print match(test1, test2)
 
-print match(test1, test2)
+    #Test used in a published paper
+    #Result: 0.911273652409
+    test1 = "It's very difficult to get teams from China the right to stay here for a longer period of time."
+    test2 = "It is difficult to get the right to stay in China for a long period of time."
+    print match(test1, test2)
 
-test1 = "Man riding a bicycle with a banana"
-test2 = "man riding a bike with a banana"
-print match(test1, test2)
