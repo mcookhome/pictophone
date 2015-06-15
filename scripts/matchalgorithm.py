@@ -3,9 +3,6 @@ import sys
 import nltk
 from nltk.corpus import wordnet as wn
 
-test1 = "Man riding a bicycle with a banana"
-test2= "man riding a bike with a fruit"
-
 class Capturing(list):
     def __enter__(self):
         self._stdout = sys.stdout
@@ -24,16 +21,18 @@ def generateSyns(word):
             print lemma.name()
 
 def findSynPts(origWords, typedWords):
-    print origWords
-    allSyns1 = []
+    allSyns = []
+    synPts = 0
     for w in origWords:
-        with Capturing() as syns1:
+        with Capturing() as syns:
             generateSyns(w)
-        allSyns1.append(syns1)
-    print allSyns1
-        
+        allSyns.extend(syns)
+    for w in allSyns:
+        if w in typedWords:
+            synPts += 1
+    synPts /= len(allSyns)*1.0
+    return synPts
     
-
 def match(original, typed):
     #Prepare the strings
     origWords = original.lower().split(" ")
@@ -51,9 +50,10 @@ def match(original, typed):
     excessPts = len([w for w in typedWords if w not in origWords])/length(2.0)
 
     #Check for synonyms
-    findSynPts(origWords, typedWords)
+    synPts = findSynPts(origWords, typedWords)
     
-    points = matchPts - excessPts
+    #Total points
+    points = matchPts - excessPts + synPts
     return points
 
 def lemmalist(str):
@@ -73,5 +73,12 @@ def wordMatch(original, typed):
             points += 1
             return points
 
-match(test1, test2)
 
+test1 = "Man riding a bicycle with a banana"
+test2= "man riding a bike with a fruit"
+
+print match(test1, test2)
+
+test1 = "Man riding a bicycle with a banana"
+test2 = "man riding a bike with a banana"
+print match(test1, test2)
