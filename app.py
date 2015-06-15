@@ -35,6 +35,7 @@ def game(name=None):
         username=session['username']
         myGames=manager.getUserGames(username)
         if name is None:
+            privateGames=manager.getPrivateGames(username)
             gamelist=manager.getCompleteGames()
             #print gamelist
             return render_template("game.html",loggedin=loggedin,username=username,ids=ids,gamelist=gamelist,myGames=myGames)

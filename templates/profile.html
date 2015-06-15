@@ -13,7 +13,15 @@
 {% endfor %}
 {% endif %}
 <center><h2 class="secondary">{{name}}</h2>
-<h3 class="secondary">{{reason}}</h3>
+<h3 class="secondary">{{reason}}</h3><br><br>
+
+{% if privateGames is defined %}
+<center><h2 class ="secondary">My Private Games</h2>
+{% for x in privateGames %}
+<a id="white" class="button-xlarge pure-button group-button" href="/game/{{x}}">{{x}}</a>
+<br>
+{% endfor %}
+
 
 {% else %}
 <br><br><br>

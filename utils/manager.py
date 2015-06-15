@@ -324,3 +324,22 @@ def newPrivateGame(name, username, scenario,turns,password):
     conn.commit()
     conn.close()
 
+def hasPassword(name):
+    conn = sqlite3.connect("databases/game.db")
+    c = conn.cursor()
+    c.execute("select password from '"+name+"'")
+    p = c.fetchall()
+    print p
+    if p!="":
+        return False
+    return True
+
+def getPrivateGames(username):
+	games = getGames()
+	gameNames = []
+	for x in games:
+		if username in getMembers(x):
+                    if x.hasPassword(x)
+			gameNames.append(x)
+	print gameNames
+	return gameNames
