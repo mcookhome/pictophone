@@ -35,6 +35,8 @@ def findSynPts(origWords, typedWords):
     
 def match(original, typed):
     #Prepare the strings
+    original, typed = original.strip(".,"), typed.strip(".,")
+    print original + "\n" + typed
     origWords = original.lower().split(" ")
     typedWords = typed.lower().split(" ")
     forNLTK = nltk.Text(nltk.word_tokenize(typed))
@@ -98,5 +100,9 @@ if __name__ == "__main__":
     #Result: 0.911273652409
     test1 = "It's very difficult to get teams from China the right to stay here for a longer period of time."
     test2 = "It is difficult to get the right to stay in China for a long period of time."
+    print match(test1, test2)
+
+    test1 = "Guy falls into a volcano"
+    test2 = "volcano."
     print match(test1, test2)
 
