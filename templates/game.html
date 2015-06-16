@@ -9,18 +9,26 @@
 {% if gamelist is defined %}
 <center><h2 class="secondary">Completed Games</h2>
 {% for x in gamelist %}
-<a id="white" class="button-xlarge pure-button group-button" href="/game/{{x}}">{{x}}</a> <br>
+<a id="white" class="button-xlarge pure-button group-button" href="/game/{{x}}">{{x}}</a> <br><br>
 {% endfor %}
 {% endif %}
-<center><h2 class="secondary">{{name}}</h2>
+{% if reason is defined %}
+<center>
 <h3 class="secondary">{{reason}}</h3>
+</center>
+{% endif %}
+{% if gameFax is defined %}
+<center><h2 class="secondary">{{name}}</h2>
+<p style="font-family:courier;font-size:160%;color:#FFE4B5" >Percent Match: {{percent}}%</p>
+
 {% for item in gameFax %}
 {% if item[0] is odd %}
 Sentence {{((item[0]/2)+0.5) | int}}:<b>{{item[2]}} -- {{item[1]}}</b><br>
 {% else %}
-<img src="{{item[2]}}"/><b>{{item[1]}}</b><br>
+<img src="{{item[2]}}"/><b> Drawn by {{item[1]}}</b><br>
 {% endif %}
   {% endfor %}
-
+<br><br><br><br>
+{% endif %}
 
 {% endblock %}

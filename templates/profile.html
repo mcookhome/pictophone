@@ -15,6 +15,13 @@
 <center><h2 class="secondary">{{name}}</h2>
 <h3 class="secondary">{{reason}}</h3>
 
+<center><h3>{{name}}'s Games</h3>
+{% for x in theirgames %}
+<a id="white" class="button-xlarge pure-button group-button" href="/game/{{x}}">{{x}}</a> <br><br>
+{% endfor %}
+
+
+
 {% else %}
 <br><br><br>
 	<center>

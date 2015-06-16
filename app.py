@@ -1,5 +1,5 @@
 from flask import Flask,request,url_for,redirect,render_template,session,flash
-from utils import manager
+from utils import manager, match
 
 app=Flask(__name__)
 app.secret_key="Dankmemesbro"
@@ -34,21 +34,26 @@ def game(name=None):
         loggedin=True
         username=session['username']
         myGames=manager.getUserGames(username)
-        if name is None:
-            gamelist=manager.getCompleteGames()
-            #print gamelist
-            return render_template("game.html",loggedin=loggedin,username=username,ids=ids,gamelist=gamelist,myGames=myGames)
         if request.method=='POST':
             if request.form["submit"] == "Go":
                 if manager.getProfilePath() != "profile/":
                     return redirect(manager.getProfilePath())
+        if name is None:
+            gamelist=manager.getCompleteGames()
+            #print gamelist
+            return render_template("game.html",loggedin=loggedin,username=username,ids=ids,gamelist=gamelist,myGames=myGames)
         print name
         gameFax=manager.getGameFax(name)
+        starts=gameFax[0][2]
+        ends=gameFax[-1][2]
+        percent=match.match(starts,ends)
+        percent=int(round(abs(percent)*100))
+        
         finished=manager.isComplete(name)
         if finished is False:
             return render_template("game.html",loggedin=loggedin,username=username,ids=ids,reason="This game is still in progress!",myGames=myGames)
         else:
-            return render_template("game.html", loggedin=loggedin, username=username,ids=ids,gameFax=gameFax,name=name,myGames=myGames)
+            return render_template("game.html", loggedin=loggedin, username=username,ids=ids,gameFax=gameFax,name=name,myGames=myGames,percent=percent)
     else:
         loggedin=False
         username = '-'
@@ -62,6 +67,7 @@ def profile(name=None):
         loggedin=True
         username=session['username']
         myGames=manager.getUserGames(username)
+        theirgames=manager.getUserGames(name)
         users=manager.getAllUsers()
         if name is None:
             #print users
@@ -73,7 +79,7 @@ def profile(name=None):
         print name
         if name not in users:
             return render_template("game.html",loggedin=loggedin,username=username,ids=ids,reason="There is no user with this name!", myGames=myGames)
-        return render_template("profile.html", loggedin=loggedin, username=username,ids=ids,name=name,myGames=myGames)
+        return render_template("profile.html", loggedin=loggedin, username=username,ids=ids,name=name,myGames=myGames,theirgames=theirgames)
     else:
         loggedin=False
         username = '-'
@@ -328,6 +334,6 @@ if __name__=="__main__":
     app.debug=True
     app.secret_key="Dankmemesbro"
     manager.setup()
-    app.run(host='0.0.0.0')
+    app.run()
     
 #testbranch
