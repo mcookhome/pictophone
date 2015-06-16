@@ -12,7 +12,7 @@ wrote and the game goes on. It is designed to simply be funny, not a competetive
 * Hubert- Html and web design
  * base html files by: 5/1 (done)
  * login by: 5/4 (done)
- * percent match (optional): 5/8 (WIP)
+ * percent match (optional): 5/8 (Done)
  * sentence match algorithm: 5/18
 * Matt and Andrew- database (SQL) and Flask
  * flask and database setup by: 5/6 (done)
