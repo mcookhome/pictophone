@@ -10,7 +10,7 @@ For example, Player 1 writes a sentence describing a scene, then Player 2 draws 
 sees the scene Player 2 drew, and writes a sentence. Player 4 draws a picture based on the sentence Player 3 
 wrote and the game goes on. It is designed to simply be funny, not a competetive game. 
 ### Checkpoints/Timeline
-* Hubert- Html and web design
+* Hubert- Html and web design/sentence matching
  * base html files by: 5/1 (done)
  * login by: 5/4 (done)
  * percent match (optional): 5/8 (Done)
